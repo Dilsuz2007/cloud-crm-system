@@ -1,0 +1,13 @@
+.git
+.agents
+.codex
+.recovery_backup
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.env
+venv/
+.venv/
+texstyle_crm.db

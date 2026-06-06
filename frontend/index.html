@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TexStyle CRM - Ulgurji Savdo CRM</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="toast hidden">
+        <i id="toast-icon" class="fa-solid fa-circle-info"></i>
+        <span id="toast-message">Xabar matni</span>
+    </div>
+
+    <!-- Login Page -->
+    <div id="login-container" class="login-wrapper">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="logo">
+                    <i class="fa-solid fa-shirt gradient-text"></i>
+                    <span class="gradient-text">TexStyle CRM</span>
+                </div>
+                <h2>CRM tizimiga kirish</h2>
+                <p>Ulgurji kiyim-kechak savdosi boshqaruv paneli</p>
+            </div>
+            
+            <form id="login-form">
+                <div class="input-group">
+                    <label for="email"><i class="fa-regular fa-envelope"></i> Email Manzil</label>
+                    <input type="email" id="email" required placeholder="admin@texstyle.uz" autocomplete="username">
+                </div>
+                <div class="input-group">
+                    <label for="password"><i class="fa-solid fa-lock"></i> Parol</label>
+                    <input type="password" id="password" required placeholder="••••••••" autocomplete="current-password">
+                </div>
+                <button type="submit" class="btn btn-primary btn-block" id="login-btn">
+                    <span>Kirish</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
+                </button>
+            </form>
+            
+            <div class="login-footer">
+                <p>Namunaviy foydalanuvchilar (Test uchun):</p>
+                <ul>
+                    <li><strong>Admin:</strong> admin@texstyle.uz (parol: admin123)</li>
+                    <li><strong>Sales:</strong> sales@texstyle.uz (parol: sales123)</li>
+                    <li><strong>Warehouse:</strong> warehouse@texstyle.uz (parol: warehouse123)</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main CRM Application Dashboard -->
+    <div id="app-container" class="app-layout hidden">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <i class="fa-solid fa-shirt"></i>
+                <span>TexStyle CRM</span>
+            </div>
+            
+            <div class="user-profile-badge">
+                <div class="avatar">
+                    <i class="fa-solid fa-user-tie"></i>
+                </div>
+                <div class="info">
+                    <h4 id="user-name">Yuklanmoqda...</h4>
+                    <span id="user-role" class="badge">Rol</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-menu">
+                <ul>
+                    <li data-target="dashboard" class="menu-item active">
+                        <a href="#"><i class="fa-solid fa-chart-pie"></i> <span>Dashboard</span></a>
+                    </li>
+                    <li data-target="clients" class="menu-item">
+                        <a href="#"><i class="fa-solid fa-users"></i> <span>Mijozlar (B2B)</span></a>
+                    </li>
+                    <li data-target="orders" class="menu-item">
+                        <a href="#"><i class="fa-solid fa-cart-shopping"></i> <span>Buyurtmalar</span></a>
+                    </li>
+                    <li data-target="warehouse" class="menu-item">
+                        <a href="#"><i class="fa-solid fa-warehouse"></i> <span>Ombor & Yetkazish</span></a>
+                    </li>
+                    <li data-target="tasks" class="menu-item">
+                        <a href="#"><i class="fa-solid fa-list-check"></i> <span>Vazifalar</span></a>
+                    </li>
+                    <li data-target="users" class="menu-item admin-only">
+                        <a href="#"><i class="fa-solid fa-user-gear"></i> <span>Xodimlar</span></a>
+                    </li>
+                </ul>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button id="logout-btn" class="btn btn-danger-outline btn-block">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> <span>Chiqish</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Top Navbar -->
+            <header class="top-nav">
+                <button id="sidebar-toggle" class="sidebar-toggle-btn">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <h1 id="page-title">Dashboard</h1>
+                <div class="top-nav-actions">
+                    <span id="server-status" class="status-indicator online">
+                        <span class="dot"></span> Backend: Online
+                    </span>
+                </div>
+            </header>
+
+            <!-- Content Screens -->
+            <div class="content-body">
+                
+                <!-- 1. DASHBOARD SCREEN -->
+                <section id="screen-dashboard" class="screen">
+                    <div class="metrics-grid">
+                        <div class="metric-card glass">
+                            <div class="icon-wrapper bg-success">
+                                <i class="fa-solid fa-sack-dollar"></i>
+                            </div>
+                            <div class="metric-details">
+                                <p>Jami To'langan Savdolar</p>
+                                <h3 id="stat-total-sales">$0.00</h3>
+                            </div>
+                        </div>
+                        <div class="metric-card glass">
+                            <div class="icon-wrapper bg-warning">
+                                <i class="fa-solid fa-hand-holding-dollar"></i>
+                            </div>
+                            <div class="metric-details">
+                                <p>Mijozlar Qarz Yig'indisi</p>
+                                <h3 id="stat-pending-payments">$0.00</h3>
+                            </div>
+                        </div>
+                        <div class="metric-card glass">
+                            <div class="icon-wrapper bg-primary">
+                                <i class="fa-solid fa-circle-check"></i>
+                            </div>
+                            <div class="metric-details">
+                                <p>Tugallangan Buyurtmalar</p>
+                                <h3 id="stat-completed-orders">0 ta</h3>
+                            </div>
+                        </div>
+                        <div class="metric-card glass">
+                            <div class="icon-wrapper bg-info">
+                                <i class="fa-solid fa-truck-fast"></i>
+                            </div>
+                            <div class="metric-details">
+                                <p>Kutilayotgan Yetkazishlar</p>
+                                <h3 id="stat-pending-deliveries">0 ta</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-visuals">
+                        <!-- Sales Chart / Graphic Display -->
+                        <div class="visual-card glass lg">
+                            <div class="card-header">
+                                <h3>To'lov Statuslari Tahlili</h3>
+                                <p>Ulushlar bo'yicha buyurtmalar soni</p>
+                            </div>
+                            <div class="chart-container">
+                                <div class="chart-mock">
+                                    <div class="chart-ring">
+                                        <div class="ring-fill" id="chart-ring-fill"></div>
+                                        <div class="ring-center">
+                                            <h4 id="chart-total-count">0</h4>
+                                            <span>Jami Buyurtmalar</span>
+                                        </div>
+                                    </div>
+                                    <div class="chart-legend">
+                                        <div class="legend-item"><span class="color-dot bg-success"></span> To'langan: <strong id="legend-paid">0</strong></div>
+                                        <div class="legend-item"><span class="color-dot bg-warning"></span> Qisman to'langan: <strong id="legend-partial">0</strong></div>
+                                        <div class="legend-item"><span class="color-dot bg-danger"></span> To'lanmagan: <strong id="legend-pending">0</strong></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Orders -->
+                        <div class="visual-card glass xl">
+                            <div class="card-header">
+                                <h3>Oxirgi Buyurtmalar</h3>
+                                <button onclick="switchScreen('orders')" class="btn btn-text">Hammasini ko'rish <i class="fa-solid fa-arrow-right"></i></button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Mijoz</th>
+                                            <th>Sana</th>
+                                            <th>Summa</th>
+                                            <th>To'lov</th>
+                                            <th>Yetkazish</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recent-orders-table">
+                                        <tr><td colspan="6" class="text-center text-muted">Yuklanmoqda...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. CLIENTS SCREEN -->
+                <section id="screen-clients" class="screen hidden">
+                    <div class="screen-header">
+                        <div class="search-box">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" id="client-search" placeholder="Mijoz nomi yoki kontakt bo'yicha qidirish...">
+                        </div>
+                        <button class="btn btn-primary" onclick="openModal('client-modal')">
+                            <i class="fa-solid fa-user-plus"></i> Yangi Mijoz Qo'shish
+                        </button>
+                    </div>
+
+                    <div class="card glass">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Kompaniya Nomi</th>
+                                        <th>Mas'ul Shaxs</th>
+                                        <th>Telefon</th>
+                                        <th>Email</th>
+                                        <th>Manzil</th>
+                                        <th>Balans (Qarz)</th>
+                                        <th>Amallar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="clients-table-body">
+                                    <tr><td colspan="7" class="text-center text-muted">Yuklanmoqda...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. ORDERS SCREEN -->
+                <section id="screen-orders" class="screen hidden">
+                    <div class="screen-header">
+                        <div class="filter-actions">
+                            <div class="search-box">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="order-search" placeholder="Buyurtmalarni qidirish...">
+                            </div>
+                        </div>
+                        <button class="btn btn-primary sales-manager-only" onclick="openCreateOrderModal()">
+                            <i class="fa-solid fa-cart-plus"></i> Yangi Buyurtma
+                        </button>
+                    </div>
+
+                    <div class="card glass">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Mijoz</th>
+                                        <th>Yaratuvchi</th>
+                                        <th>Jami Summa</th>
+                                        <th>To'lov Statusi</th>
+                                        <th>Yetkazib berish</th>
+                                        <th>Sana</th>
+                                        <th>Amallar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="orders-table-body">
+                                    <tr><td colspan="8" class="text-center text-muted">Yuklanmoqda...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. WAREHOUSE SCREEN -->
+                <section id="screen-warehouse" class="screen hidden">
+                    <div class="screen-header">
+                        <h3>Yetkazib berish va Logistika boshqaruvi</h3>
+                    </div>
+                    
+                    <div class="card glass">
+                        <div class="card-header">
+                            <p>Tizimdagi barcha buyurtmalar va ularning yetkazib berish holatlari (Kuryer, Trek-kodlar)</p>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Order ID</th>
+                                        <th>Mijoz</th>
+                                        <th>Transport (Kuryer)</th>
+                                        <th>Trek Kodi</th>
+                                        <th>Holati</th>
+                                        <th>Taxminiy Sana</th>
+                                        <th>Amallar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="warehouse-table-body">
+                                    <tr><td colspan="7" class="text-center text-muted">Yuklanmoqda...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. TASKS SCREEN -->
+                <section id="screen-tasks" class="screen hidden">
+                    <div class="screen-header">
+                        <h3>Menejerlar uchun vazifalar taqvimi</h3>
+                        <button class="btn btn-primary" onclick="openCreateTaskModal()">
+                            <i class="fa-solid fa-calendar-plus"></i> Yangi Vazifa
+                        </button>
+                    </div>
+
+                    <div class="tasks-board">
+                        <div class="task-column">
+                            <div class="column-header warning">
+                                <h4>Kutilmoqda <span id="count-task-pending" class="count-badge">0</span></h4>
+                            </div>
+                            <div id="tasks-pending-list" class="task-cards-list">
+                                <!-- Tasks -->
+                            </div>
+                        </div>
+
+                        <div class="task-column">
+                            <div class="column-header success">
+                                <h4>Bajarildi <span id="count-task-completed" class="count-badge">0</span></h4>
+                            </div>
+                            <div id="tasks-completed-list" class="task-cards-list">
+                                <!-- Tasks -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. USERS SCREEN (ADMIN ONLY) -->
+                <section id="screen-users" class="screen hidden">
+                    <div class="screen-header">
+                        <h3>Tizim foydalanuvchilari va xodimlar boshqaruvi</h3>
+                        <button class="btn btn-primary" onclick="openModal('user-modal')">
+                            <i class="fa-solid fa-user-shield"></i> Yangi Xodim
+                        </button>
+                    </div>
+
+                    <div class="card glass">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Foydalanuvchi</th>
+                                        <th>Email</th>
+                                        <th>Rol (Lavozim)</th>
+                                        <th>Holat</th>
+                                        <th>Amallar</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="users-table-body">
+                                    <tr><td colspan="6" class="text-center text-muted">Yuklanmoqda...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- ----------------- MODALS ----------------- -->
+
+    <!-- 1. Client Create/Edit Modal -->
+    <div id="client-modal" class="modal-backdrop hidden">
+        <div class="modal glass">
+            <div class="modal-header">
+                <h3 id="client-modal-title">Yangi Mijoz Qo'shish</h3>
+                <button onclick="closeModal('client-modal')" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="client-form">
+                <input type="hidden" id="client-id-field">
+                <div class="input-group">
+                    <label>Kompaniya Nomi</label>
+                    <input type="text" id="client-company-name" required placeholder="Masalan: Trendy Wear LLC">
+                </div>
+                <div class="input-group">
+                    <label>Mas'ul Shaxs (Kontakt)</label>
+                    <input type="text" id="client-contact" required placeholder="Masalan: Sardor Rahimov">
+                </div>
+                <div class="form-row">
+                    <div class="input-group col">
+                        <label>Telefon</label>
+                        <input type="text" id="client-phone" required placeholder="Masalan: +998901234567">
+                    </div>
+                    <div class="input-group col">
+                        <label>Email</label>
+                        <input type="email" id="client-email" required placeholder="Masalan: client@company.uz">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Manzil</label>
+                    <input type="text" id="client-address" required placeholder="Masalan: Toshkent sh., Buyuk Ipak Yo'li, 45">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('client-modal')">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 2. Client Communications History / Logs Modal -->
+    <div id="client-comm-modal" class="modal-backdrop hidden">
+        <div class="modal glass large">
+            <div class="modal-header">
+                <h3>Aloqa Tarixi: <span id="comm-client-name">Kompaniya</span></h3>
+                <button onclick="closeModal('client-comm-modal')" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="comm-form" class="comm-input-box glass-light">
+                    <input type="hidden" id="comm-client-id">
+                    <h4>Yangi aloqani qayd etish</h4>
+                    <div class="form-row">
+                        <div class="input-group col">
+                            <label>Muloqot turi</label>
+                            <select id="comm-type" required>
+                                <option value="phone">Telefon suhbati</option>
+                                <option value="email">Elektron pochta</option>
+                                <option value="meeting">Uchrashuv</option>
+                                <option value="telegram">Telegram suhbati</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>Muloqot qisqacha mazmuni</label>
+                        <textarea id="comm-summary" required placeholder="Suhbat natijasida nima kelishilganini yozing..." rows="2"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-paper-plane"></i> Log qo'shish</button>
+                </form>
+
+                <div class="comm-history-timeline mt-4">
+                    <h4>Avvalgi muloqotlar:</h4>
+                    <div id="comm-timeline-list" class="timeline">
+                        <!-- Timeline elementlari -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. Create Order Modal -->
+    <div id="order-modal" class="modal-backdrop hidden">
+        <div class="modal glass large">
+            <div class="modal-header">
+                <h3>Yangi Buyurtma Shakllantirish</h3>
+                <button onclick="closeModal('order-modal')" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="order-form">
+                <div class="form-row">
+                    <div class="input-group col">
+                        <label>Mijozni tanlang</label>
+                        <select id="order-client-id" required>
+                            <option value="">-- Mijoz kompaniyani tanlang --</option>
+                        </select>
+                    </div>
+                    <div class="input-group col">
+                        <label>To'lov holati</label>
+                        <select id="order-payment-status">
+                            <option value="pending">Kutilmoqda (Qarz)</option>
+                            <option value="partially_paid">Qisman to'langan</option>
+                            <option value="paid">To'liq to'landi</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Products Table -->
+                <div class="order-items-builder mt-3">
+                    <h4>Buyurtma tarkibidagi mahsulotlar</h4>
+                    <table class="table compact">
+                        <thead>
+                            <tr>
+                                <th>Mahsulot Nomi</th>
+                                <th width="120">Miqdor (dona)</th>
+                                <th width="150">Dona narxi ($)</th>
+                                <th width="120">Jami</th>
+                                <th width="50"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="order-items-tbody">
+                            <!-- Input rows will be added dynamically -->
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="addOrderItemRow()">
+                        <i class="fa-solid fa-plus"></i> Mahsulot qo'shish
+                    </button>
+                </div>
+
+                <div class="order-summary-box mt-3 text-right">
+                    <h3>Jami buyurtma summasi: <span id="order-total-display" class="gradient-text">$0.00</span></h3>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('order-modal')">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Buyurtmani tasdiqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 4. Update Status Modal (Orders / Payments) -->
+    <div id="status-modal" class="modal-backdrop hidden">
+        <div class="modal glass">
+            <div class="modal-header">
+                <h3>Buyurtma statuslarini yangilash</h3>
+                <button onclick="closeModal('status-modal')" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="status-form">
+                <input type="hidden" id="status-order-id">
+                <div class="input-group">
+                    <label>To'lov holati</label>
+                    <select id="status-payment">
+                        <option value="pending">To'lanmagan (Qarz)</option>
+                        <option value="partially_paid">Qisman to'langan</option>
+                        <option value="paid">To'langan</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Yetkazib berish holati</label>
+                    <select id="status-delivery">
+                        <option value="pending">Kutilmoqda</option>
+                        <option value="processing">Omborda tayyorlanmoqda</option>
+                        <option value="shipped">Kuryerga berildi (Yo'lda)</option>
+                        <option value="delivered">Yetkazib berildi</option>
+                        <option value="cancelled">Bekor qilindi</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('status-modal')">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Statuslarni saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 5. Edit Delivery Modal (Warehouse manager) -->
+    <div id="delivery-modal" class="modal-backdrop hidden">
+        <div class="modal glass">
+            <div class="modal-header">
+                <h3>Logistika / Kuryer ma'lumotlarini tahrirlash</h3>
+                <button onclick="closeModal('delivery-modal')" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="delivery-form">
+                <input type="hidden" id="delivery-id-field">
+                <div class="input-group">
+                    <label>Kuryerlik (Kompaniya nomi)</label>
+                    <input type="text" id="delivery-carrier" required placeholder="Masalan: BTS Express, Fargo, yoki Shaxsiy Haydovchi">
+                </div>
+                <div class="input-group">
+                    <label>Trek (Tracking) raqami</label>
+                    <input type="text" id="delivery-tracking" placeholder="Masalan: BTS-TRK-10029">
+                </div>
+                <div class="input-group">
+                    <label>Yetkazish statusi</label>
+                    <select id="delivery-status-select">
+                        <option value="pending">Kutilmoqda</option>
+                        <option value="processing">Omborda yig'ilmoqda</option>
+                        <option value="shipped">Kuryerga topshirildi (Yo'lda)</option>
+                        <option value="delivered">Mijozga yetkazildi</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('delivery-modal')">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 6. Create Task Modal -->
+    <div id="task-modal" class="modal-backdrop hidden">
+        <div class="modal glass">
+            <div class="modal-header">
+                <h3>Yangi Vazifa Qo'shish</h3>
+                <button onclick="closeModal('task-modal')" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="task-form">
+                <div class="input-group">
+                    <label>Vazifa Nomi</label>
+                    <input type="text" id="task-title" required placeholder="Masalan: Mijoz bilan to'lovni tasdiqlash">
+                </div>
+                <div class="input-group">
+                    <label>Menejer (Mas'ul xodim)</label>
+                    <select id="task-assigned-to" required>
+                        <!-- Dynamic list of users -->
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Mijoz kompaniya (Majburiy emas)</label>
+                    <select id="task-client-id">
+                        <option value="">-- Aloqador mijoz yo'q --</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Batafsil izoh</label>
+                    <textarea id="task-description" placeholder="Vazifa tafsilotlari..."></textarea>
+                </div>
+                <div class="input-group">
+                    <label>Bajarilish muddati (Due Date)</label>
+                    <input type="date" id="task-due-date" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('task-modal')">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 7. Create User Modal (Admin only) -->
+    <div id="user-modal" class="modal-backdrop hidden">
+        <div class="modal glass">
+            <div class="modal-header">
+                <h3>Yangi Xodim Qo'shish</h3>
+                <button onclick="closeModal('user-modal')" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="user-form">
+                <div class="input-group">
+                    <label>To'liq ismi</label>
+                    <input type="text" id="user-fullname" required placeholder="Masalan: Jamshid Usmonov">
+                </div>
+                <div class="input-group">
+                    <label>Elektron pochta (Email)</label>
+                    <input type="email" id="user-email" required placeholder="Masalan: jamshid@texstyle.uz">
+                </div>
+                <div class="input-group">
+                    <label>Parol</label>
+                    <input type="password" id="user-password" required placeholder="Kamida 6 ta belgi">
+                </div>
+                <div class="input-group">
+                    <label>Tizimdagi roli</label>
+                    <select id="user-role-select" required>
+                        <option value="sales_manager">Sales Manager (Sotuv menejeri)</option>
+                        <option value="warehouse_manager">Warehouse Manager (Ombor menejeri)</option>
+                        <option value="admin">Admin (Administrator)</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('user-modal')">Bekor qilish</button>
+                    <button type="submit" class="btn btn-primary">Saqlash</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Custom Script JS -->
+    <script src="app.js?v=20260604d"></script>
+</body>
+</html>
