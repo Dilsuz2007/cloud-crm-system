@@ -41,7 +41,33 @@ function showToast(message, type = "info") {
     
     setTimeout(() => {
         toast.classList.add("hidden");
-    }, 4000);
+    }, type === "danger" ? 10000 : 4000);
+}
+
+class ApiError extends Error {
+    constructor(message, details = {}) {
+        super(message);
+        this.name = "ApiError";
+        Object.assign(this, details);
+    }
+}
+
+function formatApiError(error) {
+    if (!(error instanceof ApiError)) {
+        return error?.message || "Noma'lum xatolik";
+    }
+
+    const parts = [`${error.status || "NETWORK"} ${error.method} ${error.endpoint}`, error.message];
+    if (error.errorId) {
+        parts.push(`Xatolik ID: ${error.errorId}`);
+    }
+    return parts.join(" | ");
+}
+
+function showApiError(context, error) {
+    const message = `${context}: ${formatApiError(error)}`;
+    console.error(message, error);
+    showToast(message, "danger");
 }
 
 function formatCurrency(val) {
@@ -81,25 +107,47 @@ async function apiCall(endpoint, method = "GET", body = null, isUrlEncoded = fal
             body: requestBody
         });
         
-        if (response.status === 401) {
+        if (response.status === 401 && endpoint !== "/auth/login") {
             // Token eskirgan bo'lsa avtomatik logout
             logout();
             showToast("Sessiya muddati tugadi. Tizimga qayta kiring", "warning");
-            throw new Error("Unauthorized");
+            throw new ApiError("Sessiya muddati tugadi", {
+                status: response.status,
+                method,
+                endpoint
+            });
         }
         
         if (!response.ok) {
-            const errData = await response.json().catch(() => ({ detail: "Noma'lum xatolik" }));
-            throw new Error(errData.detail || `Server xatoligi: ${response.status}`);
+            const rawText = await response.text();
+            let errData = {};
+            try {
+                errData = rawText ? JSON.parse(rawText) : {};
+            } catch {
+                errData = { detail: rawText };
+            }
+            throw new ApiError(errData.detail || response.statusText || "Server xatoligi", {
+                status: response.status,
+                method,
+                endpoint,
+                errorId: errData.error_id || response.headers.get("X-Request-ID"),
+                response: errData
+            });
         }
         
-        if (response.status === 24) { // No Content
+        if (response.status === 204) {
             return null;
         }
         
         return await response.json();
     } catch (error) {
-        console.error(`API Call error: ${endpoint}`, error);
+        if (!(error instanceof ApiError)) {
+            throw new ApiError(error.message || "Serverga ulanib bo'lmadi", {
+                method,
+                endpoint,
+                cause: error
+            });
+        }
         throw error;
     }
 }
@@ -128,7 +176,7 @@ document.getElementById("login-form").addEventListener("submit", async (e) => {
         showToast("Tizimga muvaffaqiyatli kirildi!", "success");
         await checkAuth();
     } catch (error) {
-        showToast(error.message || "Email yoki parol noto'g'ri", "danger");
+        showApiError("Tizimga kirib bo'lmadi", error);
     } finally {
         loginBtn.disabled = false;
         loginBtn.innerHTML = `<span>Kirish</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>`;
@@ -392,7 +440,7 @@ async function loadDashboard() {
         });
         
     } catch (error) {
-        showToast("Dashboard ma'lumotlarini yuklashda xatolik", "danger");
+        showApiError("Dashboard ma'lumotlarini yuklab bo'lmadi", error);
     }
 }
 
@@ -418,7 +466,7 @@ async function loadClients() {
         state.clients = clients;
         renderClients(clients);
     } catch (error) {
-        showToast("Mijozlar ro'yxatini yuklab bo'lmadi", "danger");
+        showApiError("Mijozlar ro'yxatini yuklab bo'lmadi", error);
     }
 }
 
@@ -491,7 +539,7 @@ document.getElementById("client-form").addEventListener("submit", async (e) => {
         document.getElementById("client-id-field").value = "";
         loadClients();
     } catch (error) {
-        showToast("Mijoz ma'lumotlarini saqlab bo'lmadi", "danger");
+        showApiError("Mijoz ma'lumotlarini saqlab bo'lmadi", error);
     }
 });
 
@@ -557,7 +605,7 @@ async function loadCommunications(clientId) {
             list.appendChild(div);
         });
     } catch (error) {
-        showToast("Aloqalar tarixini yuklashda xatolik", "danger");
+        showApiError("Aloqalar tarixini yuklab bo'lmadi", error);
     }
 }
 
@@ -576,7 +624,7 @@ document.getElementById("comm-form").addEventListener("submit", async (e) => {
         document.getElementById("comm-summary").value = "";
         await loadCommunications(clientId);
     } catch (error) {
-        showToast("Muloqotni qayd etib bo'lmadi", "danger");
+        showApiError("Muloqotni qayd etib bo'lmadi", error);
     }
 });
 
@@ -588,7 +636,7 @@ async function loadOrders() {
         state.orders = orders;
         renderOrders(orders);
     } catch (error) {
-        showToast("Buyurtmalarni yuklab bo'lmadi", "danger");
+        showApiError("Buyurtmalarni yuklab bo'lmadi", error);
     }
 }
 
@@ -652,7 +700,7 @@ async function openCreateOrderModal() {
         
         openModal("order-modal");
     } catch (error) {
-        showToast("Mijozlarni yuklashda xatolik", "danger");
+        showApiError("Mijozlarni yuklab bo'lmadi", error);
     }
 }
 
@@ -728,7 +776,7 @@ document.getElementById("order-form").addEventListener("submit", async (e) => {
         closeModal("order-modal");
         loadOrders();
     } catch (error) {
-        showToast("Buyurtmani saqlab bo'lmadi: " + error.message, "danger");
+        showApiError("Buyurtmani saqlab bo'lmadi", error);
     }
 });
 
@@ -757,7 +805,7 @@ document.getElementById("status-form").addEventListener("submit", async (e) => {
         closeModal("status-modal");
         loadOrders();
     } catch (error) {
-        showToast("Statuslarni yangilashda xatolik yuz berdi", "danger");
+        showApiError("Buyurtma statusini yangilab bo'lmadi", error);
     }
 });
 
@@ -822,7 +870,7 @@ async function loadWarehouse() {
             tbody.appendChild(tr);
         });
     } catch (error) {
-        showToast("Logistika ro'yxatini yuklashda xatolik yuz berdi", "danger");
+        showApiError("Logistika ro'yxatini yuklab bo'lmadi", error);
     }
 }
 
@@ -838,6 +886,8 @@ function editDelivery(id) {
         document.getElementById("delivery-status-select").value = del.status;
         
         openModal("delivery-modal");
+    }).catch(error => {
+        showApiError("Logistika ma'lumotini yuklab bo'lmadi", error);
     });
 }
 
@@ -857,7 +907,7 @@ document.getElementById("delivery-form").addEventListener("submit", async (e) =>
         closeModal("delivery-modal");
         loadWarehouse();
     } catch (error) {
-        showToast("Logistikani saqlab bo'lmadi", "danger");
+        showApiError("Logistikani saqlab bo'lmadi", error);
     }
 });
 
@@ -897,7 +947,7 @@ async function loadTasks() {
         }
         
     } catch (error) {
-        showToast("Vazifalar ro'yxatini yuklab bo'lmadi", "danger");
+        showApiError("Vazifalar ro'yxatini yuklab bo'lmadi", error);
     }
 }
 
@@ -938,7 +988,7 @@ async function toggleTaskStatus(id, status) {
         showToast("Vazifa holati o'zgartirildi!", "success");
         loadTasks();
     } catch (error) {
-        showToast("Vazifa holatini yangilashda xatolik", "danger");
+        showApiError("Vazifa holatini yangilab bo'lmadi", error);
     }
 }
 
@@ -965,7 +1015,7 @@ async function openCreateTaskModal() {
         
         openModal("task-modal");
     } catch (error) {
-        showToast("Ma'lumotlarni yuklab bo'lmadi", "danger");
+        showApiError("Vazifa uchun ma'lumotlarni yuklab bo'lmadi", error);
     }
 }
 
@@ -987,7 +1037,7 @@ document.getElementById("task-form").addEventListener("submit", async (e) => {
         document.getElementById("task-form").reset();
         loadTasks();
     } catch (error) {
-        showToast("Vazifani qo'shishda xatolik", "danger");
+        showApiError("Vazifani qo'shib bo'lmadi", error);
     }
 });
 
@@ -1021,7 +1071,7 @@ async function loadUsers() {
             tbody.appendChild(tr);
         });
     } catch (error) {
-        showToast("Xodimlar ro'yxatini yuklashda xatolik", "danger");
+        showApiError("Xodimlar ro'yxatini yuklab bo'lmadi", error);
     }
 }
 
@@ -1042,7 +1092,7 @@ document.getElementById("user-form").addEventListener("submit", async (e) => {
         document.getElementById("user-form").reset();
         loadUsers();
     } catch (error) {
-        showToast("Xodimni qo'shib bo'lmadi: " + error.message, "danger");
+        showApiError("Xodimni qo'shib bo'lmadi", error);
     }
 });
 
@@ -1053,7 +1103,7 @@ async function deleteUser(id, email) {
             showToast("Foydalanuvchi tizimdan o'chirildi", "success");
             loadUsers();
         } catch (error) {
-            showToast("O'chirishda xatolik: " + error.message, "danger");
+            showApiError("Foydalanuvchini o'chirib bo'lmadi", error);
         }
     }
 }

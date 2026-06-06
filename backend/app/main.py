@@ -1,4 +1,9 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+import logging
+import time
+import uuid
+from fastapi import FastAPI, Depends, HTTPException, Request, status
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -23,6 +28,105 @@ from .auth import (
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title=settings.PROJECT_NAME, version="1.0.0")
+logger = logging.getLogger("texstyle.api")
+
+
+@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    started_at = time.perf_counter()
+    request_id = request.headers.get("X-Request-ID", str(uuid.uuid4())[:8])
+    request.state.request_id = request_id
+    try:
+        response = await call_next(request)
+    except Exception:
+        logger.exception(
+            "request_id=%s method=%s path=%s unhandled_error",
+            request_id,
+            request.method,
+            request.url.path,
+        )
+        raise
+
+    duration_ms = (time.perf_counter() - started_at) * 1000
+    response.headers["X-Request-ID"] = request_id
+    logger.info(
+        "request_id=%s method=%s path=%s status=%s duration_ms=%.1f",
+        request_id,
+        request.method,
+        request.url.path,
+        response.status_code,
+        duration_ms,
+    )
+    return response
+
+
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    request_id = getattr(request.state, "request_id", str(uuid.uuid4())[:8])
+    logger.warning(
+        "request_id=%s method=%s path=%s status=%s detail=%s",
+        request_id,
+        request.method,
+        request.url.path,
+        exc.status_code,
+        exc.detail,
+    )
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "detail": exc.detail,
+            "error_id": request_id,
+            "path": request.url.path,
+        },
+        headers={**(exc.headers or {}), "X-Request-ID": request_id},
+    )
+
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    request_id = getattr(request.state, "request_id", str(uuid.uuid4())[:8])
+    errors = []
+    for error in exc.errors():
+        location = ".".join(str(part) for part in error["loc"])
+        errors.append(f"{location}: {error['msg']}")
+    detail = "; ".join(errors)
+    logger.warning(
+        "request_id=%s method=%s path=%s status=422 detail=%s",
+        request_id,
+        request.method,
+        request.url.path,
+        detail,
+    )
+    return JSONResponse(
+        status_code=422,
+        content={
+            "detail": detail,
+            "error_id": request_id,
+            "path": request.url.path,
+        },
+        headers={"X-Request-ID": request_id},
+    )
+
+
+@app.exception_handler(Exception)
+async def unexpected_exception_handler(request: Request, exc: Exception):
+    request_id = getattr(request.state, "request_id", str(uuid.uuid4())[:8])
+    logger.exception(
+        "request_id=%s method=%s path=%s status=500 detail=%s",
+        request_id,
+        request.method,
+        request.url.path,
+        exc,
+    )
+    return JSONResponse(
+        status_code=500,
+        content={
+            "detail": "Ichki server xatosi yuz berdi",
+            "error_id": request_id,
+            "path": request.url.path,
+        },
+        headers={"X-Request-ID": request_id},
+    )
 
 # CORS sozlamalari (Frontend ulanishi uchun)
 app.add_middleware(
