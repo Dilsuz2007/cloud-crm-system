@@ -1,0 +1,44 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            echo "Starting deployment..."
+
+            cd cloud-crm-system
+
+            echo "Pulling latest code..."
+            git pull origin main || git pull origin master
+
+            echo "Rebuilding Docker images..."
+            docker compose build
+
+            echo "Starting containers..."
+            docker compose up -d
+
+            echo "Removing unused old Docker images..."
+            docker image prune -f
+
+            echo "Checking running containers..."
+            docker compose ps
+
+            echo "Deployment finished successfully."
