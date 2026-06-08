@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="uz">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,12 +8,15 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Custom Style -->
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
     <!-- Notification Toast -->
@@ -32,7 +36,7 @@
                 <h2>CRM tizimiga kirish</h2>
                 <p>Ulgurji kiyim-kechak savdosi boshqaruv paneli</p>
             </div>
-            
+
             <form id="login-form">
                 <div class="input-group">
                     <label for="email"><i class="fa-regular fa-envelope"></i> Email Manzil</label>
@@ -40,15 +44,16 @@
                 </div>
                 <div class="input-group">
                     <label for="password"><i class="fa-solid fa-lock"></i> Parol</label>
-                    <input type="password" id="password" required placeholder="••••••••" autocomplete="current-password">
+                    <input type="password" id="password" required placeholder="••••••••"
+                        autocomplete="current-password">
                 </div>
                 <button type="submit" class="btn btn-primary btn-block" id="login-btn">
                     <span>Kirish</span> <i class="fa-solid fa-arrow-right-to-bracket"></i>
                 </button>
             </form>
-            
+
             <div class="login-footer">
-                <p>Namunaviy foydalanuvchilar (Test uchun):</p>
+                <p>Namunaviy foydalanuvchilar (Salom Test uchun):</p>
                 <ul>
                     <li><strong>Admin:</strong> admin@texstyle.uz (parol: admin123)</li>
                     <li><strong>Sales:</strong> sales@texstyle.uz (parol: sales123)</li>
@@ -66,7 +71,7 @@
                 <i class="fa-solid fa-shirt"></i>
                 <span>TexStyle CRM</span>
             </div>
-            
+
             <div class="user-profile-badge">
                 <div class="avatar">
                     <i class="fa-solid fa-user-tie"></i>
@@ -124,7 +129,7 @@
 
             <!-- Content Screens -->
             <div class="content-body">
-                
+
                 <!-- 1. DASHBOARD SCREEN -->
                 <section id="screen-dashboard" class="screen">
                     <div class="metrics-grid">
@@ -183,9 +188,12 @@
                                         </div>
                                     </div>
                                     <div class="chart-legend">
-                                        <div class="legend-item"><span class="color-dot bg-success"></span> To'langan: <strong id="legend-paid">0</strong></div>
-                                        <div class="legend-item"><span class="color-dot bg-warning"></span> Qisman to'langan: <strong id="legend-partial">0</strong></div>
-                                        <div class="legend-item"><span class="color-dot bg-danger"></span> To'lanmagan: <strong id="legend-pending">0</strong></div>
+                                        <div class="legend-item"><span class="color-dot bg-success"></span> To'langan:
+                                            <strong id="legend-paid">0</strong></div>
+                                        <div class="legend-item"><span class="color-dot bg-warning"></span> Qisman
+                                            to'langan: <strong id="legend-partial">0</strong></div>
+                                        <div class="legend-item"><span class="color-dot bg-danger"></span> To'lanmagan:
+                                            <strong id="legend-pending">0</strong></div>
                                     </div>
                                 </div>
                             </div>
@@ -195,7 +203,8 @@
                         <div class="visual-card glass xl">
                             <div class="card-header">
                                 <h3>Oxirgi Buyurtmalar</h3>
-                                <button onclick="switchScreen('orders')" class="btn btn-text">Hammasini ko'rish <i class="fa-solid fa-arrow-right"></i></button>
+                                <button onclick="switchScreen('orders')" class="btn btn-text">Hammasini ko'rish <i
+                                        class="fa-solid fa-arrow-right"></i></button>
                             </div>
                             <div class="table-responsive">
                                 <table class="table">
@@ -210,7 +219,9 @@
                                         </tr>
                                     </thead>
                                     <tbody id="recent-orders-table">
-                                        <tr><td colspan="6" class="text-center text-muted">Yuklanmoqda...</td></tr>
+                                        <tr>
+                                            <td colspan="6" class="text-center text-muted">Yuklanmoqda...</td>
+                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -223,7 +234,8 @@
                     <div class="screen-header">
                         <div class="search-box">
                             <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="text" id="client-search" placeholder="Mijoz nomi yoki kontakt bo'yicha qidirish...">
+                            <input type="text" id="client-search"
+                                placeholder="Mijoz nomi yoki kontakt bo'yicha qidirish...">
                         </div>
                         <button class="btn btn-primary" onclick="openModal('client-modal')">
                             <i class="fa-solid fa-user-plus"></i> Yangi Mijoz Qo'shish
@@ -245,7 +257,9 @@
                                     </tr>
                                 </thead>
                                 <tbody id="clients-table-body">
-                                    <tr><td colspan="7" class="text-center text-muted">Yuklanmoqda...</td></tr>
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted">Yuklanmoqda...</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -282,7 +296,9 @@
                                     </tr>
                                 </thead>
                                 <tbody id="orders-table-body">
-                                    <tr><td colspan="8" class="text-center text-muted">Yuklanmoqda...</td></tr>
+                                    <tr>
+                                        <td colspan="8" class="text-center text-muted">Yuklanmoqda...</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -294,10 +310,11 @@
                     <div class="screen-header">
                         <h3>Yetkazib berish va Logistika boshqaruvi</h3>
                     </div>
-                    
+
                     <div class="card glass">
                         <div class="card-header">
-                            <p>Tizimdagi barcha buyurtmalar va ularning yetkazib berish holatlari (Kuryer, Trek-kodlar)</p>
+                            <p>Tizimdagi barcha buyurtmalar va ularning yetkazib berish holatlari (Kuryer, Trek-kodlar)
+                            </p>
                         </div>
                         <div class="table-responsive">
                             <table class="table">
@@ -313,7 +330,9 @@
                                     </tr>
                                 </thead>
                                 <tbody id="warehouse-table-body">
-                                    <tr><td colspan="7" class="text-center text-muted">Yuklanmoqda...</td></tr>
+                                    <tr>
+                                        <td colspan="7" class="text-center text-muted">Yuklanmoqda...</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -373,7 +392,9 @@
                                     </tr>
                                 </thead>
                                 <tbody id="users-table-body">
-                                    <tr><td colspan="6" class="text-center text-muted">Yuklanmoqda...</td></tr>
+                                    <tr>
+                                        <td colspan="6" class="text-center text-muted">Yuklanmoqda...</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -391,7 +412,8 @@
         <div class="modal glass">
             <div class="modal-header">
                 <h3 id="client-modal-title">Yangi Mijoz Qo'shish</h3>
-                <button onclick="closeModal('client-modal')" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="closeModal('client-modal')" class="btn-close"><i
+                        class="fa-solid fa-xmark"></i></button>
             </div>
             <form id="client-form">
                 <input type="hidden" id="client-id-field">
@@ -415,10 +437,12 @@
                 </div>
                 <div class="input-group">
                     <label>Manzil</label>
-                    <input type="text" id="client-address" required placeholder="Masalan: Toshkent sh., Buyuk Ipak Yo'li, 45">
+                    <input type="text" id="client-address" required
+                        placeholder="Masalan: Toshkent sh., Buyuk Ipak Yo'li, 45">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('client-modal')">Bekor qilish</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('client-modal')">Bekor
+                        qilish</button>
                     <button type="submit" class="btn btn-primary">Saqlash</button>
                 </div>
             </form>
@@ -430,7 +454,8 @@
         <div class="modal glass large">
             <div class="modal-header">
                 <h3>Aloqa Tarixi: <span id="comm-client-name">Kompaniya</span></h3>
-                <button onclick="closeModal('client-comm-modal')" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="closeModal('client-comm-modal')" class="btn-close"><i
+                        class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body">
                 <form id="comm-form" class="comm-input-box glass-light">
@@ -449,9 +474,11 @@
                     </div>
                     <div class="input-group">
                         <label>Muloqot qisqacha mazmuni</label>
-                        <textarea id="comm-summary" required placeholder="Suhbat natijasida nima kelishilganini yozing..." rows="2"></textarea>
+                        <textarea id="comm-summary" required
+                            placeholder="Suhbat natijasida nima kelishilganini yozing..." rows="2"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-paper-plane"></i> Log qo'shish</button>
+                    <button type="submit" class="btn btn-primary btn-sm"><i class="fa-solid fa-paper-plane"></i> Log
+                        qo'shish</button>
                 </form>
 
                 <div class="comm-history-timeline mt-4">
@@ -516,7 +543,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('order-modal')">Bekor qilish</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('order-modal')">Bekor
+                        qilish</button>
                     <button type="submit" class="btn btn-primary">Buyurtmani tasdiqlash</button>
                 </div>
             </form>
@@ -528,7 +556,8 @@
         <div class="modal glass">
             <div class="modal-header">
                 <h3>Buyurtma statuslarini yangilash</h3>
-                <button onclick="closeModal('status-modal')" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="closeModal('status-modal')" class="btn-close"><i
+                        class="fa-solid fa-xmark"></i></button>
             </div>
             <form id="status-form">
                 <input type="hidden" id="status-order-id">
@@ -551,7 +580,8 @@
                     </select>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('status-modal')">Bekor qilish</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('status-modal')">Bekor
+                        qilish</button>
                     <button type="submit" class="btn btn-primary">Statuslarni saqlash</button>
                 </div>
             </form>
@@ -563,13 +593,15 @@
         <div class="modal glass">
             <div class="modal-header">
                 <h3>Logistika / Kuryer ma'lumotlarini tahrirlash</h3>
-                <button onclick="closeModal('delivery-modal')" class="btn-close"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="closeModal('delivery-modal')" class="btn-close"><i
+                        class="fa-solid fa-xmark"></i></button>
             </div>
             <form id="delivery-form">
                 <input type="hidden" id="delivery-id-field">
                 <div class="input-group">
                     <label>Kuryerlik (Kompaniya nomi)</label>
-                    <input type="text" id="delivery-carrier" required placeholder="Masalan: BTS Express, Fargo, yoki Shaxsiy Haydovchi">
+                    <input type="text" id="delivery-carrier" required
+                        placeholder="Masalan: BTS Express, Fargo, yoki Shaxsiy Haydovchi">
                 </div>
                 <div class="input-group">
                     <label>Trek (Tracking) raqami</label>
@@ -585,7 +617,8 @@
                     </select>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('delivery-modal')">Bekor qilish</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('delivery-modal')">Bekor
+                        qilish</button>
                     <button type="submit" class="btn btn-primary">Saqlash</button>
                 </div>
             </form>
@@ -625,7 +658,8 @@
                     <input type="date" id="task-due-date" required>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('task-modal')">Bekor qilish</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('task-modal')">Bekor
+                        qilish</button>
                     <button type="submit" class="btn btn-primary">Saqlash</button>
                 </div>
             </form>
@@ -661,7 +695,8 @@
                     </select>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" onclick="closeModal('user-modal')">Bekor qilish</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeModal('user-modal')">Bekor
+                        qilish</button>
                     <button type="submit" class="btn btn-primary">Saqlash</button>
                 </div>
             </form>
@@ -671,4 +706,5 @@
     <!-- Custom Script JS -->
     <script src="app.js?v=20260606-errors"></script>
 </body>
+
 </html>
