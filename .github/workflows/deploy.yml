@@ -29,6 +29,9 @@ jobs:
             echo "Pulling latest code..."
             git pull origin main || git pull origin master
 
+            echo "Down Docker images..."
+            docker compose down
+
             echo "Rebuilding Docker images..."
             docker compose build
 
